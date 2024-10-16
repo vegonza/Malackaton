@@ -1,0 +1,190 @@
+services:
+  app_home:
+    container_name: app_home
+    build:
+      context: clover-app/clover-home
+      dockerfile: Dockerfile
+    expose:
+      - "5000"
+    networks:
+      - app_internal
+      - external_network
+    volumes:
+      - ./certs/app:/app/certs
+      - ./hugging_face:/root/.cache/huggingface
+    environment:
+      - INFERENCE_API=http://inference_nginx:80
+      - SQL_API=http://sql_nginx:80
+      - STORAGE_API=http://storage_nginx:80
+      - HF_HOME=hugging_face
+    develop:
+      watch:
+        - action: sync+restart
+          path: ./clover-app/clover-home/
+          target: /app/
+
+  app_chat:
+    container_name: app_chat
+    build:
+      context: clover-app/clover-chat
+      dockerfile: Dockerfile
+    expose:
+      - "5000"
+    networks:
+      - app_internal
+      - external_network
+    volumes:
+      - ./certs/app:/app/certs
+    environment:
+      - INFERENCE_API=http://inference_nginx:80
+      - SQL_API=http://sql_nginx:80
+      - STORAGE_API=http://storage_nginx:80
+      - APP_SERVER=http://app.clover.local
+    develop:
+      watch:
+        - action: sync+restart
+          path: ./clover-app/clover-chat/
+          target: /app/
+
+  app_nginx:
+    container_name: app_nginx
+    build:
+      context: clover-app/nginx
+      dockerfile: Dockerfile_debug
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - app_home
+      - app_chat
+    networks:
+      - app_internal
+      - external_network
+
+  storage:
+    container_name: storage
+    build:
+      context: clover-storage
+      dockerfile: Dockerfile
+    expose:
+      - "5000"
+    volumes:
+      - ./clover-storage/storage:/app/storage
+    networks:
+      - storage_internal
+    develop:
+      watch:
+        - action: sync+restart
+          path: ./clover-storage/
+          target: /app/
+          ignore:
+            - ./storage/
+
+  storage_nginx:
+    container_name: storage_nginx
+    build:
+      context: clover-storage/nginx
+      dockerfile: Dockerfile
+    ports:
+      - "8001:80"
+      - "9001:443"
+    depends_on:
+      - storage
+    networks:
+      - storage_internal
+      - external_network
+    volumes:
+      - ./certs/storage:/etc/nginx/ssl/
+    environment:
+      - ALLOWED_IP=all
+
+  sql:
+    container_name: sql
+    build:
+      context: clover-sql
+      dockerfile: Dockerfile
+    expose:
+      - "5000"
+    volumes:
+      - ./clover-sql/sql:/app/SQL
+    networks:
+      - sql_internal
+    develop:
+      watch:
+        - action: sync+restart
+          path: ./clover-sql/
+          target: /app/
+          ignore:
+            - ./SQL/
+
+  sql_nginx:
+    container_name: sql_nginx
+    build:
+      context: clover-sql/nginx
+      dockerfile: Dockerfile
+    ports:
+      - "8002:80"
+      - "9002:443"
+    depends_on:
+      - sql
+    networks:
+      - sql_internal
+      - external_network
+    volumes:
+      - ./certs/sql:/etc/nginx/ssl/
+    environment:
+      - ALLOWED_IP=all
+
+  inference:
+    container_name: inference
+    build:
+      context: clover-inference
+      dockerfile: Dockerfile
+    expose:
+      - "5000"
+    networks:
+      - inference_internal
+      - external_network
+    volumes:
+      - ./clover-inference/vectorDB:/app/vectorDB
+    develop:
+      watch:
+        - action: sync+restart
+          path: ./clover-inference/
+          target: /app/
+          ignore:
+            - ./vectorDB/
+
+  inference_nginx:
+    container_name: inference_nginx
+    build:
+      context: clover-inference/nginx
+      dockerfile: Dockerfile
+    ports:
+      - "8003:80"
+      - "9003:443"
+    depends_on:
+      - inference
+    networks:
+      - inference_internal
+      - external_network
+    volumes:
+      - ./certs/inference:/etc/nginx/ssl/
+    environment:
+      - ALLOWED_IP=all
+
+networks:
+  app_internal:
+    driver: bridge
+    internal: true
+  storage_internal:
+    driver: bridge
+    internal: true
+  sql_internal:
+    driver: bridge
+    internal: true
+  inference_internal:
+    driver: bridge
+    internal: true
+  external_network:
+    driver: bridge
