@@ -10,9 +10,33 @@
 <body>
     <header>
         <div class="container">
-            <div class="search-bar">
-                <input type="text" id="search-input" placeholder="Buscar...">
-            </div>
+            <label for="radius-slider"></label>
+            <input type="range" id="radius-slider" min="1" max="200" value="100" />
+            <p>Radio: <span id="radius-value">100</span> km</p>
+        
+            <button class="search-bar" id="boton-filtro" onclick="myFunction()">Filtrar</button>
+
+            <form style="display:none" id="formulario" class="formulario">
+                <div>
+                <label for="fname" style="color: black;">Comunidad Autónoma: </label><br>
+                <input type="text" id="fname" name="fname"><br>
+                </div>
+                <div>
+                <label for="lname"style="color: black;">Eléctrica: </label><br>
+                <input type="checkbox" id="boton-submit" name="lname">
+                </div>
+                <div>
+                <label for="fname" style="color: black;">Agua: </label><br>
+                <input type="text" id="fname" name="fname"><br>
+                </div>
+
+                <div>
+                <label for="fname" style="color: black;">Provincia: </label><br>
+                <input type="text" id="fname" name="fname"><br>
+                </div>
+                <button id="submit" onclick="buscar()">Buscar</button>
+            </form>
+
         </div>
     </header>
     <div id="map"></div>
@@ -40,40 +64,44 @@
         // Array de embalses (ejemplo)
 
         const searchInput = document.getElementById("search-input");
+        
+        function myFunction() {
+            document.getElementById("formulario").style="display:flex";
+            document.getElementById("boton-filtro").style="display:none";
+        }
 
-        searchInput.addEventListener("keydown", function(event) {
-            if (event.key==='Enter') {
-                document.addEventListener('DOMContentLoaded', () => {
-                    // Hacer fetch a la API de Flask
-                    fetch('/embalses')
-                        .then(response => response.json())
-                        .then(embalses => {
-                            // Mostrar los embalses
-                            const embalsesContainer = document.getElementById('embalses');
-                            embalses.forEach(embalse => {
-                                const embalseDiv = document.createElement('div');
-                                embalseDiv.innerHTML = `
-                                    <p><strong>Nombre:</strong> ${embalse.nombre}</p>
-                                    <p><strong>Ubicación:</strong> ${embalse.ubicacion}</p>
-                                    <p><strong>Capacidad:</strong> ${embalse.capacidad} millones de metros cúbicos</p>
-                                    <hr>
-                                `;
-                                embalsesContainer.appendChild(embalseDiv);
-                            });
-                        })
-                        .catch(error => console.error('Error fetching embalses:', error));
-                });
-                searchInput.value='';
-                const query = searchInput.value.toLowerCase();
-                const filteredEmbalses = embalses.filter(embalse => 
-                    embalse.nombre.toLowerCase().includes(query)
-                );
+        function buscar() {
+            document.addEventListener('DOMContentLoaded', () => {
+                // Hacer fetch a la API de Flask
+                fetch('/embalses')
+                    .then(response => response.json())
+                    .then(embalses => {
+                        // Mostrar los embalses
+                        const embalsesContainer = document.getElementById('embalses');
+                        embalses.forEach(embalse => {
+                            const embalseDiv = document.createElement('div');
+                            embalseDiv.innerHTML = `
+                                <p><strong>Nombre:</strong> ${embalse.nombre}</p>
+                                <p><strong>Ubicación:</strong> ${embalse.ubicacion}</p>
+                                <p><strong>Capacidad:</strong> ${embalse.capacidad} millones de metros cúbicos</p>
+                                <hr>
+                            `;
+                            embalsesContainer.appendChild(embalseDiv);
+                        });
+                    })
+                    .catch(error => console.error('Error fetching embalses:', error));
+            });
+            searchInput.value='';
+            const query = searchInput.value.toLowerCase();
+            const filteredEmbalses = embalses.filter(embalse => 
+                embalse.nombre.toLowerCase().includes(query)
+            );
 
-                // Actualizar la interfaz para mostrar los embalses filtrados
-                console.log(filteredEmbalses); // Prueba: ver los resultados en la consola
-                // Aquí podrías añadir más lógica para mostrar los resultados en la barra lateral
-            }
-        });
+            // Actualizar la interfaz para mostrar los embalses filtrados
+            console.log(filteredEmbalses); // Prueba: ver los resultados en la consola
+            // Aquí podrías añadir más lógica para mostrar los resultados en la barra lateral
+        };
+
     </script>
 </body>
 </html>

@@ -2,10 +2,23 @@ let map;
 let latitud,longitud
 let centrallat=40.4168
 let centrallong=-3.7038
+let circle; 
+let radiusValue = 100;
+
+
+const radiusSlider = document.getElementById('radius-slider');
+const radiusValueDisplay = document.getElementById('radius-value');
+
+radiusSlider.addEventListener('input', function() {
+  radiusValue = parseInt(this.value); // Get the radius from the slider
+  radiusValueDisplay.textContent = radiusValue; // Update the displayed value
+  circle.setRadius(radiusValue*1000); // Update the circle's radius
+  map.fitBounds(circle.getBounds());
+});
 
 function calcularDistancia(lat1, lon1, lat2, lon2) {
   // Radio de la Tierra en kilómetros
-  const radioTierra = 6371;
+  const ºTierra = 6371;
 
   // Convertir las coordenadas de grados a radianes
   const radLat1 = degToRad(lat1);
@@ -87,7 +100,7 @@ async function initMap() {
         title: "Posición actual",
       });
 
-      var radio = new google.maps.Circle({
+         circle = new google.maps.Circle({
           strokeColor: "blue",
           strokeOpacity: 0.9,
           strokeWeight: 2,
@@ -102,7 +115,7 @@ async function initMap() {
         });
       
     
-      map.fitBounds(radio.getBounds());
+      map.fitBounds(circle.getBounds());
     
       items.forEach(item => {
         if (calcularDistancia(latitud,longitud,item.lat,item.lng)<=100) addMarker(item);

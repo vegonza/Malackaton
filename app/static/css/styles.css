@@ -108,3 +108,14 @@ header {
     border-radius: 5px 0 0 5px;
     outline: none;
 }
+
+.formulario {
+    display: flex;
+    flex-direction: row; /* Alinea los elementos en una fila */
+    align-items: center; /* Centra verticalmente los elementos */
+}
+
+.formulario div {
+    margin-right: 10px;
+}
+
