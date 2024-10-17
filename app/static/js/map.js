@@ -100,7 +100,7 @@ async function initMap() {
         title: "Posición actual",
       });
 
-         circle = new google.maps.Circle({
+        circle = new google.maps.Circle({
           strokeColor: "blue",
           strokeOpacity: 0.9,
           strokeWeight: 2,
@@ -111,7 +111,7 @@ async function initMap() {
             lat: latitud,
             lng: longitud
           },
-          radius: 1000 * 100
+          radius: radiusValue*1000, 
         });
       
     
