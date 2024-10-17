@@ -14,4 +14,7 @@ def index():
     return render_template("home.html")
 
 if __name__ == '__main__':
+    from app.api.sql_api import test_db
+    response = test_db()
+    print(response)
     app.run(debug=True)
