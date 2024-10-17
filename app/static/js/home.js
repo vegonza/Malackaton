@@ -1,6 +1,6 @@
-async function showSidebar(embalseId) {
+async function showSidebar(item) {
     const sidebar = document.getElementById('sidebar');
-
+    console.log(item)
     // Si la barra lateral ya está visible, ocultarla
     if (sidebar.classList.contains('visible')) {
         sidebar.style.left = '-300px'; // Mover a la posición oculta
@@ -19,7 +19,7 @@ async function showSidebar(embalseId) {
     }, 20);
 
     // Construir la URL para llamar a la API
-    const apiUrl = `api/analytics/load_data?id=${embalseId}`;
+    const apiUrl = `api/analytics/load_data?id=${item.id}`;
 
     // Llamar a la API para obtener los datos del embalse
     try {
@@ -33,7 +33,7 @@ async function showSidebar(embalseId) {
         const data = await response.json();
 
         // Actualizar la información en la barra lateral
-        document.getElementById('embalse-nombre').textContent = `Embalse ID: ${embalseId}`;
+        document.getElementById('embalse-nombre').textContent = `Embalse ID: ${item.id}`;
         document.getElementById('embalse-ubicacion').textContent = "Ubicación del Embalse";
         document.getElementById('embalse-capacidad').textContent = "Capacidad: N/A";
 
@@ -80,9 +80,3 @@ function mostrarGrafica(fechas, nivelesAgua) {
         }
     });
 }
-
-// Añadir el evento al botón
-document.addEventListener('DOMContentLoaded', function() {
-    const button = document.querySelector('.button');
-    button.addEventListener('click', () => showSidebar(18)); // Llama a la función con un ID de embalse de ejemplo
-});
