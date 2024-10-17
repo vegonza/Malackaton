@@ -56,10 +56,14 @@ async function showSidebar(embalseId) {
     }
 }
 
-// Función para mostrar la gráfica de evolución del agua
 function mostrarGrafica(fechas, nivelesAgua) {
     const ctx = document.getElementById('embalse-grafica').getContext('2d');
-    new Chart(ctx, {
+    
+    if (window.myChart) {
+        window.myChart.destroy();
+    }
+
+    window.myChart = new Chart(ctx, {
         type: 'line',
         data: {
             labels: fechas,
@@ -73,9 +77,9 @@ function mostrarGrafica(fechas, nivelesAgua) {
         options: {
             scales: {
                 x: { 
-                    type: 'time', // Asegúrate de que tienes Moment.js o date-fns para el formato de fecha
+                    type: 'time',
                     time: {
-                        unit: 'day', // Puedes cambiar a 'month' si necesitas
+                        unit: 'month'
                     }
                 },
                 y: { beginAtZero: true }
