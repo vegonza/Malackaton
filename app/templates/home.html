@@ -51,7 +51,7 @@
             if (event.key==='Enter') {
                 document.addEventListener('DOMContentLoaded', () => {
                     // Hacer fetch a la API de Flask
-                    fetch('/embalses')
+                    fetch('api/sql/embalses')
                         .then(response => response.json())
                         .then(embalses => {
                             // Mostrar los embalses
