@@ -19,7 +19,7 @@ async function showSidebar(embalseId) {
     }, 20);
 
     // Construir la URL para llamar a la API
-    const apiUrl = `api/analytics/load_data?id=${embalseId}`;
+    const apiUrl = `api/analytics/load_data_id?id=${embalseId}`;
 
     // Llamar a la API para obtener los datos del embalse
     try {
@@ -84,5 +84,5 @@ function mostrarGrafica(fechas, nivelesAgua) {
 // Añadir el evento al botón
 document.addEventListener('DOMContentLoaded', function() {
     const button = document.querySelector('.button');
-    button.addEventListener('click', () => showSidebar(18)); // Llama a la función con un ID de embalse de ejemplo
+    //button.addEventListener('click', () => showSidebar(18));
 });
