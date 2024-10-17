@@ -12,12 +12,6 @@ async function showSidebar(embalseId) {
         return; // Salir de la función
     }
 
-    // Asegúrate de que embalseId sea un número válido
-    if (typeof embalseId !== 'number' || isNaN(embalseId)) {
-        console.error('ID de embalse no válido:', embalseId);
-        return; // Salir de la función
-    }
-
     // Construir la URL para llamar a la API con el ID del embalse
     const apiUrl = `api/analytics/load_data?id=${embalseId}`; // Cambia el ID según sea necesario
 
