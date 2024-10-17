@@ -1,4 +1,5 @@
 import requests
+import json
 
 class DBHandler:
     def __init__(self, client_id: str, client_secret: str, db_address: str, api_name: str):
@@ -26,8 +27,11 @@ class DBHandler:
             return True
         return False
 
-    def request(self, method: str, endpoint: str, **kwargs) -> dict: 
+    def request(self, method: str, endpoint: str, filter:dict={}, **kwargs) -> dict: 
         url = self.api_url + endpoint
+        if filter:
+            url += f"?q={json.dumps(filter)}"
+            
         response = self.session.request(method, url, **kwargs)
 
         if self._refresh_token_if_needed(response):
@@ -36,27 +40,27 @@ class DBHandler:
         if not response.ok:
             raise Exception(f"API Request failed: {response.status_code}")
 
+        
         return response.json()
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     import os
     from dotenv import load_dotenv, find_dotenv
-    
+
     load_dotenv(find_dotenv())
 
     client_id = os.environ.get("CLIENT_ID")
     client_secret = os.environ.get("CLIENT_SECRET")
     db_id = os.environ.get("DB_ADDRESS")
     api_name = os.environ.get("API_NAME")
-    
-    
+
     if not all([client_id, client_secret, db_id, api_name]):
         raise EnvironmentError("Missing environment variables for CLIENT_ID, CLIENT_SECRET, or DB_ID")
 
     db_handler = DBHandler(client_id, client_secret, db_id, api_name)
 
     try:
-        response = db_handler.request("GET", "test")
+        response = db_handler.request("GET", "agua", filter={"id":18})
         print("Success:", response)
     except Exception as exc:
         print("Error:", exc)

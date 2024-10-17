@@ -1,25 +1,17 @@
-# SSH
-ssh -i oracle_keys.pem opc@158.179.221.172
-
-
 # Setup
-sudo yum update -y
-sudo yum install python3-pip -y
-sudo yum install git -y
+sudo apt update -y
+sudo apt install python3-pip -y
+sudo apt install git -y
 ssh-keygen -C githubKey
 
 # git
 git clone git@github.com:vegonza/Malackaton.git malackaton
-git pull
+git pulls
 
-# quitamos podman(docker>podman)
-sudo dnf remove -y podman
+# Install Docker and Docker Compose
+sudo apt install -y docker
+sudo curl -L "https://github.com/docker/compose/releases/download/v2.16.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && sudo chmod +x /usr/local/bin/docker-compose
 
-# docker
-sudo dnf install -y docker-ce docker-ce-cli containerd.io
-sudo systemctl start docker && sudo systemctl enable docker
-sudo usermod -aG docker $(whoami)
-
-# docker-compose
-sudo curl -L "https://github.com/docker/compose/releases/download/$(curl -s https://api.github.com/repos/docker/compose/releases/latest | grep tag_name | cut -d '"' -f 4)/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-sudo chmod +x /usr/local/bin/docker-compose
+# Certbot
+sudo apt install -y certbot
+sudo certbot certonly -d malackathon.iaclover.com
