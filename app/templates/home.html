@@ -34,6 +34,35 @@
         <canvas id="embalse-grafica"></canvas>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@fingerprintjs/fingerprintjs-pro@3/dist/fp.min.js"></script>
+    <script>
+        const fpPromise = import('https://fpjscdn.net/v3/vggMXeEcbsBru1XMUWVw')
+            .then(FingerprintJS => FingerprintJS.load({
+                region: "eu"
+            }));
+    
+        fpPromise
+            .then(fp => fp.get())
+            .then(result => {
+                const visitorId = result.visitorId;
+                console.log("Visitor ID:", visitorId);
+                
+                fetch('api/bot_detection/verify_behavior', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ visitorId })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Backend response:", data);
+                })
+                .catch(error => console.error("Error al enviar el visitorId:", error));
+            })
+            .catch(error => console.error("Error al obtener el visitorId:", error));
+    </script>
+    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
     <script src="{{ url_for('static', filename='js/home.js') }}"></script>
