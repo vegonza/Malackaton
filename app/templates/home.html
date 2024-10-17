@@ -10,23 +10,8 @@
 <body>
     <header>
         <div class="container">
-            <div class="logo">
-                <h1>Mi Sitio</h1>
-            </div>
-            <nav>
-                <ul class="nav-links">
-                    <li><a href="#">Inicio</a></li>
-                    <li><a href="#">Servicios</a></li>
-                    <li><a href="#">Contacto</a></li>
-                </ul>
-            </nav>
             <div class="search-bar">
                 <input type="text" id="search-input" placeholder="Buscar...">
-            </div>
-            <div class="menu-toggle">
-                <span></span>
-                <span></span>
-                <span></span>
             </div>
         </div>
     </header>
@@ -53,17 +38,31 @@
     <!-- JavaScript para el buscador -->
     <script>
         // Array de embalses (ejemplo)
-        const embalses = [
-            { nombre: "Embalse 1", ubicacion: "Ubicación 1", capacidad: 100 },
-            { nombre: "Embalse 2", ubicacion: "Ubicación 2", capacidad: 200 },
-            { nombre: "Embalse 3", ubicacion: "Ubicación 3", capacidad: 150 },
-            // Añade más embalses aquí según sea necesario
-        ];
 
         const searchInput = document.getElementById("search-input");
 
         searchInput.addEventListener("keydown", function(event) {
             if (event.key==='Enter') {
+                document.addEventListener('DOMContentLoaded', () => {
+                    // Hacer fetch a la API de Flask
+                    fetch('/embalses')
+                        .then(response => response.json())
+                        .then(embalses => {
+                            // Mostrar los embalses
+                            const embalsesContainer = document.getElementById('embalses');
+                            embalses.forEach(embalse => {
+                                const embalseDiv = document.createElement('div');
+                                embalseDiv.innerHTML = `
+                                    <p><strong>Nombre:</strong> ${embalse.nombre}</p>
+                                    <p><strong>Ubicación:</strong> ${embalse.ubicacion}</p>
+                                    <p><strong>Capacidad:</strong> ${embalse.capacidad} millones de metros cúbicos</p>
+                                    <hr>
+                                `;
+                                embalsesContainer.appendChild(embalseDiv);
+                            });
+                        })
+                        .catch(error => console.error('Error fetching embalses:', error));
+                });
                 searchInput.value='';
                 const query = searchInput.value.toLowerCase();
                 const filteredEmbalses = embalses.filter(embalse => 

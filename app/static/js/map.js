@@ -49,6 +49,26 @@ if(typeof latitud === 'undefined') {
   longitud=centrallong
 }
 
+async function post_loc(lat,long) {
+  data={lat:lat,lng:long};
+  fetch('/recibir_datos', {
+      method: 'POST', // Método POST para enviar datos
+      headers: {
+          'Content-Type': 'application/json', // Indica que estamos enviando JSON
+      },
+      body: JSON.stringify(data) // Convertimos el objeto JS a JSON
+  })
+  .then(response => response.json())
+  .then(data => {
+      console.log('Respuesta del servidor:', data);
+  })
+  .catch((error) => {
+      console.error('Error:', error);
+  });  
+}
+
+post_loc(latitud,longitud)
+
 async function initMap() {
     const { Map } = await google.maps.importLibrary("maps");   
 
@@ -58,7 +78,6 @@ async function initMap() {
     });
 
     // Cargar los datos desde el servidor y agregar los marcadores
-    const items = await fetchItems();
     
     if(latitud !==centrallat) {
       const actual = new google.maps.Marker({

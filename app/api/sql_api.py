@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify,request
 from app.api.DBHandler import DBHandler
 import os
 
@@ -24,6 +24,16 @@ def test_db():
     
     return response
 
+@sql_api_bp.route('/recibir_datos', methods=['POST'])
+def get_data():
+    coordenadas=request.json
+    print(coordenadas)
+    return coordenadas
+
+@sql_api_bp.route('/embalses', methods=['GET'])
+def get_embalses():
+    
+    return jsonify(embalses)
 
 if __name__ == "__main__":
     response = test_db()
