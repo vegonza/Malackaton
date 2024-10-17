@@ -18,10 +18,7 @@ radiusSlider.addEventListener('input', function() {
 });
 
 function calcularDistancia(lat1, lon1, lat2, lon2) {
-  // Radio de la Tierra en kilómetros
-  const radioTierra = 6371;
-
-  // Convertir las coordenadas de grados a radianes
+  const radioTierra = 6371; // Earth's radius in kilometers
   const radLat1 = degToRad(lat1);
   const radLat2 = degToRad(lat2);
   const deltaLat = degToRad(lat2 - lat1);
@@ -68,38 +65,8 @@ async function post_loc(lat, long) {
       body: JSON.stringify(data)
     });
 
-    // Cargar los datos desde el servidor y agregar los marcadores
-    
-    if(latitud !==centrallat) {
-      const actual = new google.maps.Marker({
-        position: { lat: latitud, lng: longitud },
-        map: map,
-        icon: "http://maps.google.com/mapfiles/ms/icons/red-dot.png",
-        title: "Posición actual",
-      });
-
-        circle = new google.maps.Circle({
-          strokeColor: "blue",
-          strokeOpacity: 0.9,
-          strokeWeight: 2,
-          fillColor: "blue",
-          fillOpacity: 0.15,
-          map: map,
-          center: {
-            lat: latitud,
-            lng: longitud
-          },
-          radius: radiusValue*1000
-        });
-
-        map.fitBounds(circle.getBounds());
-
-        items.forEach(item => {
-          if (calcularDistancialcularDistancia(latitud,longitud,item.lat,item.lng)<=100) addMarker(item);
-        });
-      
-    } else {
-      items.forEach(item => addMarker(item));
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
     }
 
     const items = await response.json(); // Assumes the response is a list of {lat, lng} objects
