@@ -1,4 +1,3 @@
-// Función para mostrar la barra lateral
 async function showSidebar(embalseId) {
     const sidebar = document.getElementById('sidebar');
 
@@ -8,12 +7,19 @@ async function showSidebar(embalseId) {
         setTimeout(() => {
             sidebar.style.display = 'none'; // Ocultar completamente
             sidebar.classList.remove('visible'); // Quitar clase visible
-        }, 500); // Tiempo de la transición
-        return; // Salir de la función
+        }, 500);
+        return;
     }
 
-    // Construir la URL para llamar a la API con el ID del embalse
-    const apiUrl = `api/analytics/load_data?id=${embalseId}`; // Cambia el ID según sea necesario
+    // Mostrar la barra lateral inmediatamente
+    sidebar.style.display = 'block';
+    setTimeout(() => {
+        sidebar.style.left = '0';
+        sidebar.classList.add('visible');
+    }, 20);
+
+    // Construir la URL para llamar a la API
+    const apiUrl = `api/analytics/load_data?id=${embalseId}`;
 
     // Llamar a la API para obtener los datos del embalse
     try {
@@ -27,23 +33,16 @@ async function showSidebar(embalseId) {
         const data = await response.json();
 
         // Actualizar la información en la barra lateral
-        document.getElementById('embalse-nombre').textContent = `Embalse ID: ${embalseId}`; // Puedes personalizar esto
-        document.getElementById('embalse-ubicacion').textContent = "Ubicación del Embalse"; // Cambia según la respuesta de la API
-        document.getElementById('embalse-capacidad').textContent = "Capacidad: N/A"; // Cambia según la respuesta de la API
+        document.getElementById('embalse-nombre').textContent = `Embalse ID: ${embalseId}`;
+        document.getElementById('embalse-ubicacion').textContent = "Ubicación del Embalse";
+        document.getElementById('embalse-capacidad').textContent = "Capacidad: N/A";
 
         // Extraer datos para la gráfica
         const fechas = data.map(entry => entry.FECHA);
         const nivelesAgua = data.map(entry => entry.AGUA_ACTUAL);
 
         // Mostrar la gráfica
-        mostrarGrafica(fechas, nivelesAgua); // Asegúrate de tener esta función definida
-
-        // Mostrar la barra lateral
-        sidebar.style.display = 'block'; // Mostrar
-        setTimeout(() => {
-            sidebar.style.left = '0'; // Mover a la posición visible
-            sidebar.classList.add('visible'); // Añadir clase visible
-        }, 20); // Pequeña pausa para permitir que el navegador registre el cambio de estilo
+        mostrarGrafica(fechas, nivelesAgua);
 
     } catch (error) {
         console.error('Error al obtener los datos del embalse:', error);
