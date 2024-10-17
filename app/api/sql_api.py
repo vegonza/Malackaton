@@ -24,16 +24,19 @@ def test_db():
     
     return response
 
-@sql_api_bp.route('/recibir_datos', methods=['POST'])
-def get_data():
-    coordenadas=request.json
-    print(coordenadas)
-    return coordenadas
+@sql_api_bp.route('/embalses_cords', methods=['POST'])
+def embalses_cords():
+    items = db_handler.request("GET", "embalses?limit=1000")['items']
+    embalses_cords = [{"lat": item['x'], "lng":item['y']} for item in items]
+    
+    return jsonify({"embalses": embalses_cords})
 
 @sql_api_bp.route('/embalses', methods=['GET'])
 def get_embalses():
+    items = db_handler.request("GET", "embalses?limit=1000")['items']
+    embalses_cords = [{"lat": item['x'], "lng":item['y']} for item in items]
     
-    return jsonify(embalses)
+    return jsonify({"embalses": embalses_cords})
 
 if __name__ == "__main__":
     response = test_db()

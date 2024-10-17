@@ -18,24 +18,24 @@
 
             <form style="display:none" id="formulario" class="formulario">
                 <div>
-                <label for="fname" style="color: black;">Comunidad Autónoma: </label><br>
-                <input type="text" id="1" name="fname"><br>
+                    <label for="ca" style="color: black;">Comunidad Autónoma:</label><br>
+                    <input type="text" id="ca" name="comunidad"><br>
                 </div>
                 <div>
-                <label for="lname"style="color: black;">Eléctrica: </label><br>
-                <input type="checkbox" id="boton-submit" name="lname">
+                    <label for="electrica" style="color: black;">Eléctrica:</label><br>
+                    <input type="checkbox" id="electrica" name="electrica">
                 </div>
                 <div>
-                <label for="fname" style="color: black;">Agua: </label><br>
-                <input type="text" id="2" name="fname"><br>
+                    <label for="agua" style="color: black;">Agua:</label><br>
+                    <input type="text" id="agua" name="agua"><br>
                 </div>
-
                 <div>
-                <label for="fname" style="color: black;">Provincia: </label><br>
-                <input type="text" id="3" name="fname"><br>
+                    <label for="provincia" style="color: black;">Provincia:</label><br>
+                    <input type="text" id="provincia" name="provincia"><br>
                 </div>
-                <button id="submit" onclick="buscar()">Buscar</button>
+                <button id="submit" type="button" onclick="buscar()">Buscar</button>
             </form>
+            
 
         </div>
     </header>
@@ -103,36 +103,37 @@
         }
 
         function buscar() {
-            document.addEventListener('DOMContentLoaded', () => {
-                // Hacer fetch a la API de Flask
-                fetch('/embalses')
-                    .then(response => response.json())
-                    .then(embalses => {
-                        // Mostrar los embalses
-                        const embalsesContainer = document.getElementById('embalses');
-                        embalses.forEach(embalse => {
-                            const embalseDiv = document.createElement('div');
-                            embalseDiv.innerHTML = `
-                                <p><strong>Nombre:</strong> ${embalse.nombre}</p>
-                                <p><strong>Ubicación:</strong> ${embalse.ubicacion}</p>
-                                <p><strong>Capacidad:</strong> ${embalse.capacidad} millones de metros cúbicos</p>
-                                <hr>
-                            `;
-                            embalsesContainer.appendChild(embalseDiv);
-                        });
-                    })
-                    .catch(error => console.error('Error fetching embalses:', error));
-            });
-            searchInput.value='';
-            const query = searchInput.value.toLowerCase();
-            const filteredEmbalses = embalses.filter(embalse => 
-                embalse.nombre.toLowerCase().includes(query)
-            );
+            // Obtener los valores de los filtros
+            const radio = document.getElementById("radius-slider").value;
+            const comunidad = document.getElementById("ca").value;
+            const electrica = document.getElementById("electrica").checked;
+            const agua = document.getElementById("agua").value;
+            const provincia = document.getElementById("provincia").value;
 
-            // Actualizar la interfaz para mostrar los embalses filtrados
-            console.log(filteredEmbalses); // Prueba: ver los resultados en la consola
-            // Aquí podrías añadir más lógica para mostrar los resultados en la barra lateral
-        };
+            // Construir el cuerpo de la solicitud
+            const filtros = {
+                radio,
+                comunidad,
+                electrica,
+                agua,
+                provincia
+            };
+
+            // Realizar el fetch con los filtros
+            fetch('/api/embalses/filtrar', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(filtros)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Resultados de los embalses:", data);
+            })
+            .catch(error => console.error("Error en la búsqueda:", error));
+        }
+
 
     </script>
 </body>
