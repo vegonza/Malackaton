@@ -5,69 +5,50 @@ body {
     padding: 0;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start; /* Alinear la barra lateral al inicio */
     min-height: 100vh;
     overflow-x: hidden; /* Ocultar desbordamiento en el eje X */
 }
 
-.container {
-    position: relative;
-    z-index: 1;
-    background-color: rgba(255, 255, 255, 0.8); /* Fondo semitransparente para mejor visibilidad */
-    padding: 20px;
-    border-radius: 8px;
-    max-width: 600px;
-    margin: 100px auto;
-    text-align: center;
-}
-
-h1 {
-    color: #0077be;
-}
-
-.emoji {
-    font-size: 3rem;
-    margin: 1rem 0;
-}
-
-.button {
-    background-color: #0077be;
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 5px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.button:hover {
-    background-color: #005c8f;
-}
-
 .sidebar {
     position: fixed;
-    left: -300px; /* Fuera de la pantalla inicialmente */
+    left: 0; /* Mover la barra lateral a la izquierda */
     top: 0;
     width: 300px;
     height: 100%;
-    background-color: #f4f4f4;
+    background-color: #ffffff; /* Fondo blanco para mayor contraste */
     padding: 20px;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
     transition: left 0.5s ease; /* Animación suave */
     z-index: 1000; /* Asegura que esté sobre otros elementos */
-    display: none; /* Oculta la barra lateral inicialmente */
 }
 
-.sidebar.visible {
-    display: block; /* Mostrar cuando está visible */
-    left: 0; /* La barra entra desde la izquierda */
+.sidebar h2 {
+    color: #0077be; /* Color del título */
+    margin-bottom: 10px; /* Espacio debajo del título */
+}
+
+#search-input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 20px; /* Bordes redondeados */
+    border: 1px solid #0077be; /* Borde del mismo color que el tema */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+    outline: none; /* Quitar contorno al enfocar */
+    transition: border-color 0.3s; /* Animación de color de borde */
+}
+
+#search-input:focus {
+    border-color: #005c8f; /* Cambiar color del borde al enfocar */
 }
 
 #embalse-grafica {
     margin-top: 20px;
     width: 100%;
     height: 250px;
+    border-radius: 8px; /* Bordes redondeados para la gráfica */
+    overflow: hidden; /* Prevenir desbordamiento */
 }
 
 #embalse-detalles {
@@ -78,7 +59,6 @@ h1 {
     margin: 5px 0;
 }
 
-/* Define el tamaño y la posición del mapa */
 #map {
     position: fixed;
     top: 0;

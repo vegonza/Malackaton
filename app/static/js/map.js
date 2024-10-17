@@ -1,4 +1,16 @@
 let map;
+let latitud,longitud
+
+function getPos(position) {
+    latitud=position.coords.latitude
+    longitud=position.coords.longitude
+  }
+  
+  if(!navigator.geolocation) {
+    console.log('No se puede')
+  } else {
+    navigator.geolocation.getCurrentPosition(getPos)
+  }
 
 async function initMap() {
     const { Map } = await google.maps.importLibrary("maps");
@@ -7,6 +19,22 @@ async function initMap() {
         center: { lat: 40.4168, lng: -3.7038 }, // Centro en España
         zoom: 6,
     });
+
+    var radio = new google.maps.Circle({
+        strokeColor: "blue",
+        strokeOpacity: 0.9,
+        strokeWeight: 2,
+        fillColor: "blue",
+        fillOpacity: 0.15,
+        map: map,
+        center: {
+          lat: latitud,
+          lng: longitud
+        },
+        radius: 1000 * 100
+      });
+    
+    map.fitBounds(radio.getBounds());
 
     // Cargar los datos desde el servidor y agregar los marcadores
     const items = await fetchItems();
@@ -25,6 +53,7 @@ function addMarker(item) {
     const marker = new google.maps.Marker({
         position: { lat: item.lat, lng: item.lng },
         map: map,
+        icon: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png",
         title: item.nombre,
     });
 
