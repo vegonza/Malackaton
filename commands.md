@@ -14,4 +14,5 @@ sudo curl -L "https://github.com/docker/compose/releases/download/v2.16.0/docker
 
 # Certbot
 sudo apt install -y certbot
-sudo certbot certonly -d malackathon.iaclover.com
+sudo certbot --nginx -d malackathon.iaclover.com
+docker cp nginx:/etc/letsencrypt /etc/letsencrypt
