@@ -61,7 +61,7 @@ if(typeof latitud === 'undefined') {
 
 async function post_loc(lat,long) {
   data={lat:lat,lng:long};
-  fetch('/recibir_datos', {
+  fetch('/api/sql/recibir_datos', {
       method: 'POST', // Método POST para enviar datos
       headers: {
           'Content-Type': 'application/json', // Indica que estamos enviando JSON

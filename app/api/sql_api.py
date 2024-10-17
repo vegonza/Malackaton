@@ -33,10 +33,34 @@ def embalses_cords():
 
 @sql_api_bp.route('/embalses', methods=['GET'])
 def get_embalses():
-    items = db_handler.request("GET", "embalses?limit=1000")['items']
-    embalses_cords = [{"lat": item['x'], "lng":item['y']} for item in items]
-    
-    return jsonify({"embalses": embalses_cords})
+    try:
+        # Recoger filtros opcionales de la solicitud
+        comunidad_autonoma = request.args.get("comunidad_autonoma")
+        provincia = request.args.get("provincia")
+        electrico = request.args.get("electrico")
+        agua = request.args.get("agua")
+
+        # Construir el diccionario de filtros
+        filters = {}
+        if comunidad_autonoma:
+            filters["comunidad_autonoma"] = comunidad_autonoma
+        if provincia:
+            filters["provincia"] = provincia
+        if electrico:
+            filters["electrico"] = bool(int(electrico))  # Asume que electrico es 0 o 1
+        if agua:
+            filters["agua"] = agua
+
+        # Solicitar embalses aplicando los filtros
+        embalses = db_handler.request("GET", "/embalses", filter=filters)
+
+        # Devolver la respuesta en formato JSON
+        return jsonify(embalses), 200
+
+    except Exception as exc:
+        print("Error al obtener los embalses:", repr(exc))
+        return jsonify({"error": "Error al obtener los embalses"}), 500
+
 
 if __name__ == "__main__":
     response = test_db()
