@@ -11,6 +11,7 @@
 
     <!-- Barra lateral -->
     <div id="sidebar" class="sidebar">
+        <input type="text" id="search-input" placeholder="Buscar embalse..." />
         <h2 id="embalse-nombre">Nombre del embalse</h2>
         <div id="embalse-detalles">
             <p>Ubicación: <span id="embalse-ubicacion"></span></p>
@@ -25,5 +26,29 @@
     <script>(g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",q="__ib__",m=document,b=window;b=b[c]||(b[c]={});var d=b.maps||(b.maps={}),r=new Set,e=new URLSearchParams,u=()=>h||(h=new Promise(async(f,n)=>{await (a=m.createElement("script"));e.set("libraries",[...r]+"");for(k in g)e.set(k.replace(/[A-Z]/g,t=>"_"+t[0].toLowerCase()),g[k]);e.set("callback",c+".maps."+q);a.src=`https://maps.${c}apis.com/maps/api/js?`+e;d[q]=f;a.onerror=()=>h=n(Error(p+" could not load."));a.nonce=m.querySelector("script[nonce]")?.nonce||"";m.head.append(a)}));d[l]?console.warn(p+" only loads once. Ignoring:",g):d[l]=(f,...n)=>r.add(f)&&u().then(()=>d[l](f,...n))})
         ({key: "AIzaSyDXmSg987bGQWgmKfenYOPwujYBaYuOQYg", v: "weekly"});</script>
     <script src="{{ url_for('static', filename='js/map.js') }}"></script>
+
+    <!-- JavaScript para el buscador -->
+    <script>
+        // Array de embalses (ejemplo)
+        const embalses = [
+            { nombre: "Embalse 1", ubicacion: "Ubicación 1", capacidad: 100 },
+            { nombre: "Embalse 2", ubicacion: "Ubicación 2", capacidad: 200 },
+            { nombre: "Embalse 3", ubicacion: "Ubicación 3", capacidad: 150 },
+            // Añade más embalses aquí según sea necesario
+        ];
+
+        const searchInput = document.getElementById("search-input");
+
+        searchInput.addEventListener("input", function() {
+            const query = searchInput.value.toLowerCase();
+            const filteredEmbalses = embalses.filter(embalse => 
+                embalse.nombre.toLowerCase().includes(query)
+            );
+
+            // Actualizar la interfaz para mostrar los embalses filtrados
+            console.log(filteredEmbalses); // Prueba: ver los resultados en la consola
+            // Aquí podrías añadir más lógica para mostrar los resultados en la barra lateral
+        });
+    </script>
 </body>
 </html>
