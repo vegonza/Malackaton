@@ -9,14 +9,15 @@ sql_api_bp = Blueprint('sql_api_bp', __name__)
 
 CLIENT_ID = os.environ.get("CLIENT_ID")
 CLIENT_SECRET = os.environ.get("CLIENT_SECRET")
-DB_ID = os.environ.get("DB_ID")
+DB_ID = os.environ.get("DB_ADDRESS")
+API_NAME = os.environ.get("API_NAME")
 
-db_handler = DBHandler(CLIENT_ID, CLIENT_SECRET, DB_ID)
+db_handler = DBHandler(CLIENT_ID, CLIENT_SECRET, DB_ID, API_NAME)
 
 @sql_api_bp.route("/test")
 def test_db():
     try:
-        response = db_handler.get("test")
+        response = db_handler.request("GET", "test")
     except Exception as exc:
         print("Error while testing db", repr(exc))
         return jsonify({"error": "Error while testing db"}), 500

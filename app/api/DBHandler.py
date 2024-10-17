@@ -1,56 +1,62 @@
 import requests
 
 class DBHandler:
-    def __init__(self, client_id, client_secret, db_id):
+    def __init__(self, client_id: str, client_secret: str, db_address: str, api_name: str):
         self.client_id = client_id
         self.client_secret = client_secret
-        self.token_url = f"https://{db_id}-dymdb.adb.eu-madrid-1.oraclecloudapps.com/ords/admin/oauth/token"
-        self.api_url = f"https://{db_id}-dymdb.adb.eu-madrid-1.oraclecloudapps.com/ords/admin/api/v1/"
+        self.token_url = f"https://{db_address}.oraclecloudapps.com/ords/admin/oauth/token"
+        self.api_url = f"https://{db_address}.oraclecloudapps.com/ords/admin/{api_name}"
+        self.session = requests.Session()
         self.token = None
-        self.obtener_token()
+        self._get_token()
 
-    def obtener_token(self):
+    def _get_token(self):
         data = {"grant_type": "client_credentials"}
-        response = requests.post(self.token_url, data=data, auth=(self.client_id, self.client_secret))
+        response = self.session.post(self.token_url, data=data, auth=(self.client_id, self.client_secret))
         
         if response.status_code == 200:
             self.token = response.json().get("access_token")
-            print("Token obtenido exitosamente.")
+            self.session.headers.update({"Authorization": f"Bearer {self.token}"})
         else:
-            raise Exception("Error al obtener el token:", response.status_code)
+            raise Exception(f"Failed to obtain token: {response.status_code}")
 
-    def get(self, endpoints):
-        url = self.api_url + endpoints
-        
-        headers = {"Authorization": f"Bearer {self.token}"}
-        response = requests.get(url, headers=headers)
-
-        # token expired
+    def _refresh_token_if_needed(self, response: requests.Response) -> bool:
         if response.status_code == 401:
-            print("Token caducado. Obteniendo un nuevo token...")
-            self.obtener_token()
-            headers["Authorization"] = f"Bearer {self.token}"
-            response = requests.get(url, headers=headers)
+            self._get_token()
+            return True
+        return False
 
-        return response
+    def request(self, method: str, endpoint: str, **kwargs) -> dict: 
+        url = self.api_url + endpoint
+        response = self.session.request(method, url, **kwargs)
+
+        if self._refresh_token_if_needed(response):
+            response = self.session.request(method, url, **kwargs)
+
+        if not response.ok:
+            raise Exception(f"API Request failed: {response.status_code}")
+
+        return response.json()
 
 if __name__ == "__main__":
     import os
     from dotenv import load_dotenv, find_dotenv
-    load_dotenv(find_dotenv())
     
-    # Ejemplo de uso
+    load_dotenv(find_dotenv())
+
     client_id = os.environ.get("CLIENT_ID")
     client_secret = os.environ.get("CLIENT_SECRET")
-    db_id = os.environ.get("DB_ID")
+    db_id = os.environ.get("DB_ADDRESS")
+    api_name = os.environ.get("API_NAME")
     
-    auth_handler = DBHandler(client_id, client_secret, db_id)
+    
+    if not all([client_id, client_secret, db_id, api_name]):
+        raise EnvironmentError("Missing environment variables for CLIENT_ID, CLIENT_SECRET, or DB_ID")
 
-    api_url = "test"
-    response = auth_handler.get(api_url)
+    db_handler = DBHandler(client_id, client_secret, db_id, api_name)
 
-    if response.status_code == 200:
-        print("Conexión exitosa:", response.json())
-    else:
-        print("Error en la conexión:", response.status_code)
-            
+    try:
+        response = db_handler.request("GET", "test")
+        print("Success:", response)
+    except Exception as exc:
+        print("Error:", exc)
