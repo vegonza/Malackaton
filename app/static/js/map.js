@@ -18,7 +18,7 @@ radiusSlider.addEventListener('input', function() {
 
 function calcularDistancia(lat1, lon1, lat2, lon2) {
   // Radio de la Tierra en kilómetros
-  const ºTierra = 6371;
+  const radioTierra = 6371;
 
   // Convertir las coordenadas de grados a radianes
   const radLat1 = degToRad(lat1);
@@ -111,15 +111,14 @@ async function initMap() {
             lat: latitud,
             lng: longitud
           },
-          radius: radiusValue*1000, 
+          radius: radiusValue*1000
         });
-      
-    
-      map.fitBounds(circle.getBounds());
-    
-      items.forEach(item => {
-        if (calcularDistancia(latitud,longitud,item.lat,item.lng)<=100) addMarker(item);
-      });
+
+        map.fitBounds(circle.getBounds());
+
+        items.forEach(item => {
+          if (calcularDistancialcularDistancia(latitud,longitud,item.lat,item.lng)<=100) addMarker(item);
+        });
       
     } else {
       items.forEach(item => addMarker(item));
