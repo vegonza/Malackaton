@@ -82,13 +82,12 @@ header {
 }
 
 .container {
-    position: fixed;
+    position:absolute;
     display: flex;
     justify-content: space-between;
     align-items: center;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 10px; /* Reducido el padding para evitar separación */
     width: 100%;
 }
 
@@ -113,7 +112,8 @@ nav ul li a {
 
 .search-bar {
     display: block;
-    margin: 0 auto;
+    margin-left: auto;
+    margin-right: 0;
     width: auto;
     height: auto;
 }
