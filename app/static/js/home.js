@@ -1,6 +1,7 @@
 async function showSidebar(item) {
+    embalseId=item.codigo;
     const sidebar = document.getElementById('sidebar');
-    console.log(item)
+
     // Si la barra lateral ya está visible, ocultarla
     if (sidebar.classList.contains('visible')) {
         sidebar.style.left = '-300px'; // Mover a la posición oculta
@@ -19,7 +20,7 @@ async function showSidebar(item) {
     }, 20);
 
     // Construir la URL para llamar a la API
-    const apiUrl = `api/analytics/load_data?id=${item.id}`;
+    const apiUrl = `api/analytics/load_data?id=${embalseId}`;
 
     // Llamar a la API para obtener los datos del embalse
     try {
@@ -33,9 +34,11 @@ async function showSidebar(item) {
         const data = await response.json();
 
         // Actualizar la información en la barra lateral
-        document.getElementById('embalse-nombre').textContent = `Embalse ID: ${item.id}`;
-        document.getElementById('embalse-ubicacion').textContent = "Ubicación del Embalse";
-        document.getElementById('embalse-capacidad').textContent = "Capacidad: N/A";
+        document.getElementById('embalse-nombre').textContent = `Embalse: ${item.embalse}`;
+        document.getElementById('embalse-ubicacion').textContent = `\n${item.provincia}`;
+        //document.getElementById('embalse-capacidad').textContent = `Capacidad: ${item.}`;
+        document.getElementById('embalse-capacidad').textContent = `Capacidad: N/A`;
+        document.getElementById('detalles').href=`${item.informe_url}`;
 
         // Extraer datos para la gráfica
         const fechas = data.map(entry => entry.FECHA);
@@ -43,6 +46,8 @@ async function showSidebar(item) {
 
         // Mostrar la gráfica
         mostrarGrafica(fechas, nivelesAgua);
+
+
 
     } catch (error) {
         console.error('Error al obtener los datos del embalse:', error);

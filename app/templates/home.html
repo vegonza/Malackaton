@@ -1,19 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="icon" type="image/x-icon" href="logo.ico">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>💧💧💧</title>
+    <title>DYAM</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1>Mi Sitio</h1>
+            </div>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="#">Inicio</a></li>
+                    <li><a href="#">Servicios</a></li>
+                    <li><a href="#">Contacto</a></li>
+                </ul>
+            </nav>
+            <div class="search-bar">
+                <input type="text" id="search-input" placeholder="Buscar...">
+            </div>
+            <div class="menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </header>
     <div id="map"></div>
 
     <!-- Barra lateral -->
-    <div id="sidebar" class="sidebar">
-        <input type="text" id="search-input" placeholder="Buscar embalse..." />
+    <div id="sidebar" class="sidebar" style="display: none">
         <h2 id="embalse-nombre">Nombre del embalse</h2>
         <div id="embalse-detalles">
+            <a id="detalles" target=”_blank”>Más Detalles</a>
             <p>Ubicación: <span id="embalse-ubicacion"></span></p>
             <p>Capacidad: <span id="embalse-capacidad"></span> hm³</p>
         </div>
@@ -39,15 +62,18 @@
 
         const searchInput = document.getElementById("search-input");
 
-        searchInput.addEventListener("input", function() {
-            const query = searchInput.value.toLowerCase();
-            const filteredEmbalses = embalses.filter(embalse => 
-                embalse.nombre.toLowerCase().includes(query)
-            );
+        searchInput.addEventListener("keydown", function(event) {
+            if (event.key==='Enter') {
+                searchInput.value='';
+                const query = searchInput.value.toLowerCase();
+                const filteredEmbalses = embalses.filter(embalse => 
+                    embalse.nombre.toLowerCase().includes(query)
+                );
 
-            // Actualizar la interfaz para mostrar los embalses filtrados
-            console.log(filteredEmbalses); // Prueba: ver los resultados en la consola
-            // Aquí podrías añadir más lógica para mostrar los resultados en la barra lateral
+                // Actualizar la interfaz para mostrar los embalses filtrados
+                console.log(filteredEmbalses); // Prueba: ver los resultados en la consola
+                // Aquí podrías añadir más lógica para mostrar los resultados en la barra lateral
+            }
         });
     </script>
 </body>
