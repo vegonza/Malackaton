@@ -10,12 +10,33 @@
 <body>
     <header>
         <div class="container">
-            <div class="search-bar">
-                <input type="text" id="search-input" placeholder="Buscar...">
-            </div>
-            <label for="radius-slider">Radio:</label>
+            <label for="radius-slider"></label>
             <input type="range" id="radius-slider" min="1" max="200" value="100" />
-            <p>Radio: <span id="radius-value">100</span> km</p>
+            <p>Radio: <span id="radius-value">100</span> km</p>
+        
+            <button class="search-bar" id="boton-filtro" onclick="myFunction()">Filtrar</button>
+
+            <form style="display:none" id="formulario" class="formulario">
+                <div>
+                    <label for="ca" style="color: black;">Comunidad Autónoma:</label><br>
+                    <input type="text" id="ca" name="comunidad"><br>
+                </div>
+                <div>
+                    <label for="electrica" style="color: black;">Eléctrica:</label><br>
+                    <input type="checkbox" id="electrica" name="electrica">
+                </div>
+                <div>
+                    <label for="agua" style="color: black;">Agua:</label><br>
+                    <input type="text" id="agua" name="agua"><br>
+                </div>
+                <div>
+                    <label for="provincia" style="color: black;">Provincia:</label><br>
+                    <input type="text" id="provincia" name="provincia"><br>
+                </div>
+                <button id="submit" type="button" onclick="buscar()">Buscar</button>
+            </form>
+            
+
         </div>
     </header>
 
@@ -34,6 +55,35 @@
         <canvas id="embalse-grafica"></canvas>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@fingerprintjs/fingerprintjs-pro@3/dist/fp.min.js"></script>
+    <script>
+        const fpPromise = import('https://fpjscdn.net/v3/vggMXeEcbsBru1XMUWVw')
+            .then(FingerprintJS => FingerprintJS.load({
+                region: "eu"
+            }));
+    
+        fpPromise
+            .then(fp => fp.get())
+            .then(result => {
+                const visitorId = result.visitorId;
+                console.log("Visitor ID:", visitorId);
+                
+                fetch('api/bot_detection/verify_behavior', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ visitorId })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Backend response:", data);
+                })
+                .catch(error => console.error("Error al enviar el visitorId:", error));
+            })
+            .catch(error => console.error("Error al obtener el visitorId:", error));
+    </script>
+    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
     <script src="{{ url_for('static', filename='js/home.js') }}"></script>
@@ -46,40 +96,45 @@
         // Array de embalses (ejemplo)
 
         const searchInput = document.getElementById("search-input");
+        
+        function myFunction() {
+            document.getElementById("formulario").style="display:flex";
+            document.getElementById("boton-filtro").style="display:none";
+        }
 
-        searchInput.addEventListener("keydown", function(event) {
-            if (event.key==='Enter') {
-                document.addEventListener('DOMContentLoaded', () => {
-                    // Hacer fetch a la API de Flask
-                    fetch('api/sql/embalses')
-                        .then(response => response.json())
-                        .then(embalses => {
-                            // Mostrar los embalses
-                            const embalsesContainer = document.getElementById('embalses');
-                            embalses.forEach(embalse => {
-                                const embalseDiv = document.createElement('div');
-                                embalseDiv.innerHTML = `
-                                    <p><strong>Nombre:</strong> ${embalse.nombre}</p>
-                                    <p><strong>Ubicación:</strong> ${embalse.ubicacion}</p>
-                                    <p><strong>Capacidad:</strong> ${embalse.capacidad} millones de metros cúbicos</p>
-                                    <hr>
-                                `;
-                                embalsesContainer.appendChild(embalseDiv);
-                            });
-                        })
-                        .catch(error => console.error('Error fetching embalses:', error));
-                });
-                searchInput.value='';
-                const query = searchInput.value.toLowerCase();
-                const filteredEmbalses = embalses.filter(embalse => 
-                    embalse.nombre.toLowerCase().includes(query)
-                );
+        function buscar() {
+            // Obtener los valores de los filtros
+            const radio = document.getElementById("radius-slider").value;
+            const comunidad = document.getElementById("ca").value;
+            const electrica = document.getElementById("electrica").checked;
+            const agua = document.getElementById("agua").value;
+            const provincia = document.getElementById("provincia").value;
 
-                // Actualizar la interfaz para mostrar los embalses filtrados
-                console.log(filteredEmbalses); // Prueba: ver los resultados en la consola
-                // Aquí podrías añadir más lógica para mostrar los resultados en la barra lateral
-            }
-        });
+            // Construir el cuerpo de la solicitud
+            const filtros = {
+                radio,
+                comunidad,
+                electrica,
+                agua,
+                provincia
+            };
+
+            // Realizar el fetch con los filtros
+            fetch('/api/embalses/filtrar', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(filtros)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Resultados de los embalses:", data);
+            })
+            .catch(error => console.error("Error en la búsqueda:", error));
+        }
+
+
     </script>
 </body>
 </html>
