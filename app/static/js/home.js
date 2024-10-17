@@ -80,9 +80,3 @@ function mostrarGrafica(fechas, nivelesAgua) {
         }
     });
 }
-
-// Añadir el evento al botón
-document.addEventListener('DOMContentLoaded', function() {
-    const button = document.querySelector('.button');
-    //button.addEventListener('click', () => showSidebar(18));
-});
