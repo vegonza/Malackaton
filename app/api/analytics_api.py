@@ -17,6 +17,7 @@ def load_data(id):
 
 @analytics_api_bp.route('/load_data', methods=['GET'])
 def get_data():
+    print(request.args)
     id = request.args.get('id')
     if not id:
         return jsonify({"error": "ID parameter is required"}), 400

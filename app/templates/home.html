@@ -11,7 +11,20 @@
         <h1>Welcome to Derivada y al Mínimo 💧</h1>
         <div class="emoji">🚰🌊🏊‍♂️</div>
         <p>Track your daily water intake and stay hydrated!</p>
-        <button class="button">Start Tracking 📊</button>
+        <button class="button" onclick="showSidebar()">Start Tracking 📊</button>
     </div>
+
+    <!-- Barra lateral -->
+    <div id="sidebar" class="sidebar">
+        <h2 id="embalse-nombre">Nombre del embalse</h2>
+        <div id="embalse-detalles">
+            <p>Ubicación: <span id="embalse-ubicacion"></span></p>
+            <p>Capacidad: <span id="embalse-capacidad"></span> hm³</p>
+        </div>
+        <canvas id="embalse-grafica"></canvas>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{{ url_for('static', filename='js/home.js') }}"></script>
 </body>
 </html>

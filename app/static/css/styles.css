@@ -7,6 +7,7 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+    overflow-x: hidden; /* Ocultar desbordamiento en el eje X */
 }
 
 .container {
@@ -39,4 +40,37 @@ h1 {
 
 .button:hover {
     background-color: #005c8f;
+}
+
+.sidebar {
+    position: fixed;
+    left: -300px; /* Fuera de la pantalla inicialmente */
+    top: 0;
+    width: 300px;
+    height: 100%;
+    background-color: #f4f4f4;
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+    transition: left 0.5s ease; /* Animación suave */
+    z-index: 1000; /* Asegura que esté sobre otros elementos */
+    display: none; /* Oculta la barra lateral inicialmente */
+}
+
+.sidebar.visible {
+    display: block; /* Mostrar cuando está visible */
+    left: 0; /* La barra entra desde la izquierda */
+}
+
+#embalse-grafica {
+    margin-top: 20px;
+    width: 100%;
+    height: 250px;
+}
+
+#embalse-detalles {
+    margin-bottom: 20px;
+}
+
+#embalse-detalles p {
+    margin: 5px 0;
 }
